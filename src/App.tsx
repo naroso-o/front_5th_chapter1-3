@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { generateItems, renderLog } from "./utils";
 import { useCallback } from "./@lib";
 import ThemeProvider from "./providers/ThemeProvider";
@@ -71,6 +71,7 @@ export const ItemList: React.FC<{
   const [filter, setFilter] = useState("");
   const { theme } = useTheme();
 
+  // TODO: 비용 개선 검증
   const filteredItems = items.filter(
     (item) =>
       item.name.toLowerCase().includes(filter.toLowerCase()) ||
@@ -245,6 +246,17 @@ export const NotificationSystem: React.FC = () => {
   );
 };
 
+export const AppWrapper = ({ children }: { children: ReactNode }) => {
+  const { theme } = useTheme();
+  return (
+    <div
+      className={`min-h-screen ${theme === "light" ? "bg-gray-100" : "bg-gray-900 text-white"}`}
+    >
+      {children}
+    </div>
+  );
+};
+
 // 메인 App 컴포넌트
 const App: React.FC = () => {
   const [items, setItems] = useState(generateItems(1000));
@@ -260,22 +272,20 @@ const App: React.FC = () => {
     <ThemeProvider>
       <NotificationProvider>
         <UserProvider>
-          {/* <div
-            className={`min-h-screen ${theme === "light" ? "bg-gray-100" : "bg-gray-900 text-white"}`}
-          > */}
-          <Header />
-          <div className="container mx-auto px-4 py-8">
-            <div className="flex flex-col md:flex-row">
-              <div className="w-full md:w-1/2 md:pr-4">
-                <ItemList items={items} onAddItemsClick={addItems} />
-              </div>
-              <div className="w-full md:w-1/2 md:pl-4">
-                <ComplexForm />
+          <AppWrapper>
+            <Header />
+            <div className="container mx-auto px-4 py-8">
+              <div className="flex flex-col md:flex-row">
+                <div className="w-full md:w-1/2 md:pr-4">
+                  <ItemList items={items} onAddItemsClick={addItems} />
+                </div>
+                <div className="w-full md:w-1/2 md:pl-4">
+                  <ComplexForm />
+                </div>
               </div>
             </div>
-          </div>
-          <NotificationSystem />
-          {/* </div> */}
+            <NotificationSystem />
+          </AppWrapper>
         </UserProvider>
       </NotificationProvider>
     </ThemeProvider>
