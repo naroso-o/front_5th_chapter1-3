@@ -12,6 +12,12 @@ export function useMemo<T>(
   const valueRef = useRef<T | undefined>(undefined);
   const depsRef = useRef<DependencyList | undefined>(undefined);
 
+  // 아직 값이 할당 안됐으면, equals 비교 전에 초기화
+  if (!depsRef.current?.length) {
+    depsRef.current = _deps;
+    valueRef.current = factory();
+  }
+
   if (!_equals(depsRef.current, _deps)) {
     depsRef.current = _deps;
     valueRef.current = factory();
